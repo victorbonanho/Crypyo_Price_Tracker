@@ -1,4 +1,4 @@
-import React, {useRef, useMemo, useState} from 'react';
+import React, {useRef, useMemo, useState, useEffect} from 'react';
 import { StyleSheet, Text, View, SafeAreaView, LogBox } from 'react-native';
 import ListItem from './components/ListItem';
 import {
@@ -8,6 +8,8 @@ import {
 import { SAMPLE_DATA } from './assets/data/sampleData';
 import { ScrollView, FlatList, GestureHandlerRootView, gestureHandlerRootHOC  } from 'react-native-gesture-handler';
 import Chart from './components/Chart';
+import { getMarketData } from './services/cryptoService';
+import { color } from 'react-native-reanimated';
 
 LogBox.ignoreLogs(["EventEmitter.removeListener"]);
 
@@ -21,8 +23,17 @@ const ListHeader = () => (
 )
 
 export default function App() {
-
+  const [data, setData] = useState([]);
   const [selectedCoidData, setSelectedCoinData] = useState(null);
+
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      const marketData = await getMarketData();
+      setData(marketData);
+    }
+
+    fetchMarketData();
+  }, [])
 
   // ref
   const bottomSheetModalRef = useRef(null);
@@ -39,9 +50,10 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1, }}>
     <BottomSheetModalProvider>
       <SafeAreaView style={styles.container}>
+      <ListHeader/>
         <FlatList
           keyExtractor={(item) => item.id}
-          data={SAMPLE_DATA}
+          data={data}
           renderItem={({item}) => (
             <ListItem 
               name={item.name} 
@@ -52,8 +64,8 @@ export default function App() {
               onPress={() => openModal(item)}
             />
           )}
-          ListHeaderComponent={<ListHeader/>}
         />
+        
       </SafeAreaView>
       <BottomSheetModal
         ref={bottomSheetModalRef}
@@ -90,6 +102,7 @@ const styles = StyleSheet.create({
   largeTitle: {
     fontSize: 24,
     fontWeight: "bold",
+    textAlign: 'center',
   },
   divider: {
     height: StyleSheet.hairlineWidth,
@@ -106,6 +119,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 40,
     elevation: 10,
-    backgroundColor: 'red',
+    backgroundColor: 'white',
   },
 });
