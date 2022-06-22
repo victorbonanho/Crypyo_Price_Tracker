@@ -26,29 +26,25 @@ const ListHeader = () => (
 export default function App() {
   const [data, setData] = useState([]);
   const [selectedCoidData, setSelectedCoinData] = useState(null);
-  const [searchText, setSearchText] = useState("");
+  // const [searchText, setSearchText] = useState("");
+  const [originalData, setOriginalData] = useState([]);
 
   useEffect(() => {
     const fetchMarketData = async () => {
       const marketData = await getMarketData();
+      setOriginalData(marketData);
       setData(marketData);
     };
     fetchMarketData();
   }, []);
 
-  //Change text logic (problem => not get the data back)
-  useEffect(() => {
-    if (searchText === "") {
-      setData(data);
-    } else {
-      setData(
-        data.filter(
-          (item) =>
-            item.id.toLowerCase().indexOf(searchText.toLocaleLowerCase()) > -1
-        )
-      );
-    }
-  }, [searchText]);
+  //Works fine, just need to add more ways to find the data
+  function search(s) {
+    let arr = JSON.parse(JSON.stringify(originalData));
+    setData(
+      arr.filter((d) => d.id.toLowerCase().includes(s.toLocaleLowerCase()))
+    );
+  }
 
   // ref
   const bottomSheetModalRef = useRef(null);
@@ -70,8 +66,7 @@ export default function App() {
             style={styles.input}
             placeholder="Search for some crypto"
             placeholderTextColor="#C5C5C5"
-            value={searchText}
-            onChangeText={(t) => setSearchText(t)}
+            onChangeText={(s) => search(s)}
           />
           <FlatList
             keyExtractor={(item) => item.id}
