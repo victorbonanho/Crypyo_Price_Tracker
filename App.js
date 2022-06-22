@@ -26,7 +26,6 @@ const ListHeader = () => (
 export default function App() {
   const [data, setData] = useState([]);
   const [selectedCoidData, setSelectedCoinData] = useState(null);
-  // const [searchText, setSearchText] = useState("");
   const [originalData, setOriginalData] = useState([]);
 
   useEffect(() => {
@@ -53,7 +52,7 @@ export default function App() {
   const bottomSheetModalRef = useRef(null);
 
   // variables
-  const snapPoints = useMemo(() => ["50%"], []);
+  const snapPoints = useMemo(() => ["40%"], []);
 
   const openModal = (item) => {
     setSelectedCoinData(item);
