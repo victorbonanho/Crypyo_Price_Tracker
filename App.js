@@ -38,11 +38,14 @@ export default function App() {
     fetchMarketData();
   }, []);
 
-  //Works fine, just need to add more ways to find the data
   function search(s) {
     let arr = JSON.parse(JSON.stringify(originalData));
     setData(
-      arr.filter((d) => d.id.toLowerCase().includes(s.toLocaleLowerCase()))
+      arr.filter(
+        (d) =>
+          d.name.toLowerCase().includes(s.toLocaleLowerCase()) ||
+          d.symbol.toLowerCase().includes(s.toLocaleLowerCase())
+      )
     );
   }
 
